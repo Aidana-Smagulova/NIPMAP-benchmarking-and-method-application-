@@ -10,3 +10,9 @@ script to run 4 niches with 1/4 of patients: 4n_nipmap.py
 
 py_wrapper_nipmap.r - R script to process data, more updated version is stored locally 
 
+parameters to change: 
+- protein markers
+- cell types (phenotypes)
+- number of niches
+- radii of sites
+- number of sites in the script 
