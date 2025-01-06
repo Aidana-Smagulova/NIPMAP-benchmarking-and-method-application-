@@ -1,12 +1,31 @@
 # NIPMAP
 
-The data: 
+Thus document aims to summarise the result of a 2-month computational internship. The contents are:
+- NIPMAP results reproduction with MIBI images of TNBC of Keren et al (2021)
+- re-application of NIPMAP on the bone cancer dataset (from Lukas Hatscher)
+- interpretation of the method output & conclusions
+
+## Proof of concept: 
+ran NIPMAP on the original data with the GITHUB repo cloned: 
+maybe compare the results to the original ones? i dunno. have to run it again i guess, cause my dumbass forgot to save any outputs... 
+
+### Data: 
 regionprops_annotated - csv files with cell coordinates in images, 1000x1000 px, 1000x1000µm
 intensities - csv files with marker intensities in images 
 
-script to run 4 niches with 1/4 of patients: 4n_nipmap.py 
+─ 7n_output
+│   ├── AA_sites.json
+│   ├── ca_sites.json
+│   ├── cells_niches.json
+│   ├── params.json
+│   ├── pca_sites.json
+│   └── sites_cells_archs.csv
+├── TMENS_analysis
+│   └── data
+│       ├── cellData.csv
+│       └── cell_positions_data
 
-py_wrapper_nipmap.r - R script to process data, more updated version is stored locally 
+
 
 process: 
 - produce csvs from the ann data object: two folders (intensities & regionsprops) with csv files for each patient, sample and ROI. names in format: TS-373_IMC78_UB_001.csv (TS-373_IMC*patient ID*_*disease*_*ROI*.csv)
