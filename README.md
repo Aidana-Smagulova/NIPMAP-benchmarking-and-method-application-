@@ -1,18 +1,20 @@
 # README
 
-Thus document aims to summarise the result of a 2-month computational internship. The contents are:
+This document aims to summarise the result of a 2-month computational internship. The contents are:
 - NIPMAP results reproduction with MIBI images of TNBC of Keren et al (2021)
 - re-application of NIPMAP on the bone cancer dataset (from Lukas Hatscher) 
 - comparison and interpretation of the method output & conclusions
 
-ORIGINAL GITHUB REPO AND THE LINK THE PAPER PLEASE THANKS.cite the authors well 
+This README file bases on the original [NIPMAP GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main) and [publication](https://www.nature.com/articles/s41467-023-42878-z) by El Marrahi et al. 2023
+
 
 ## Method description 
-NIche Phenotype MAPping (NIPMAP) analysis from spatial multiplex data.
+NIPMAP - NIche Phenotype MAPping (NIPMAP) analysis from spatial multiplex data.
 
+Tissue microenvironments play a significant role in pathology. 
 
-interfaces 
-Community ecology approach, discovering TME, archetypal analysis (machine learning), PCA, Gaussian kernel density, spatial images, discovering niches 
+NIPMAP is a spatial mathod that works to discover niches (clusters of cells with similar profile) using principles from the community ecology approach, PCA and archetypes analysis. 
+For this method, each cell type is treated like a species in an oncological niche, where its abundance can be inferred. Based on thus abundance, analysis like PCA can be performed. The PCA space is then fitted onto a simpled figure (using AA), where simplex tips are archetypes (extreme cases of niches). Each cell will find itself somewhere on the simplex. Cells right at the tips will most probably belong to that archetype and be situated in the corresponding niche. However, cells that would lie on the edges of the simplex, more specifically between two archetypes, most likely lay between two niches and will be, therefore, assigned to an interface between the two niches. 
 
 ## index? 
 
@@ -20,23 +22,33 @@ Community ecology approach, discovering TME, archetypal analysis (machine learni
 
 Tested on: OS: Red Hat Enterprise Linux 8.10 (Ootpa)
 
-minimal_env.yml 
+Use the minimal_env.yml file to re-create working conda environment for NIPMAP. 
 
-* Python 3.7.13 installed and libraries: 
-    ```
-      - matplotlib
-      - scipy
-      - pandas==1.3.5
-      - numpy>=1.17.3
-      - scikit-learn
-      - seaborn
-      - qpsolvers==1.9.0
-    ```
+Or run: 
 
-Further description of all packages in the environment can be found in the requirements.txt (LINK PLEASE) file 
+```bash
+    conda create --name NIPMAP python=3.7.13
+```
+and then:
 
-* R 4.1.3, RStudio installed, with these libraries:
+```bash
+    pip install matplotlib
+    pip install scipy
+    pip install pandas==1.3.5
+    pip install numpy>=1.17.3
+    pip install scikit-learn
+    pip install seaborn
+    pip install qpsolvers==1.9.0
+``` 
+
+
+Further description of all packages in the environment can be found in the requirements.txt file. 
+
+* R libraries:
     ```
+    - R 4.1.3
+    - RStudio
+    run: 
     pkgs <- c("tidyverse","ggplot2","ade4","factoextra","plotly","igraph","reshape2","ggrepel","viridis","fdrtool","pheatmap","cluster","broom","pROC","ggpubr","devtools","ggridges")
     install.packages(pkgs)
     ```
