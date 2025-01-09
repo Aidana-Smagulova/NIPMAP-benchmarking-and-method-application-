@@ -1,8 +1,7 @@
 # README
 
 This document aims to summarise the result of a 2-month computational internship. The contents include:
-- NIPMAP results reproduction with MIBI images of TNBC of Keren et al (2021)
-- re-application of NIPMAP on the bone cancer dataset (from Lukas Hatscher) 
+- application of NIPMAP on the bone cancer dataset (from Lukas Hatscher) 
 - comparison and interpretation of the method output & conclusions
 
 This README file bases on the original [NIPMAP GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main) and [publication](https://www.nature.com/articles/s41467-023-42878-z) by El Marrahi et al. 2023
@@ -53,13 +52,7 @@ Further description of all packages in the environment can be found in the requi
     install.packages(pkgs)
     ```
 
-## Proof of concept: 
-ran NIPMAP on the original data with the GITHUB repo cloned: 
-maybe compare the results to the original ones? i dunno. have to run it again i guess, cause my dumbass forgot to save any outputs... 
-
-Data: Multiplex Ion Imaging on 41 Triple Negative Breast tumors from [Keren et al, Cell(2018)](10.1016/j.cell.2018.08.039) and In Situ Sequencing data on human lung development from [Sountoulidis et al, 2022](https://doi.org/10.1101/2022.01.11.475631)
-
-## Re-application of the method on Lukas' data 
+## Method application
 
 ### Data: 
 ```
@@ -122,13 +115,16 @@ Parameters to change:
 
 ### Working with nipmap 
 The python script will generate these outputs as json files:
-* Generation of sites and cellular abundances within them (+ radius size selection)
-* PCA and Archetype Analysis
-* Niche identification
-* Niche segmentation of images
+pca_sites.json" # pca object on sites elements
+AA_sites.json" # archetype Analysis object based on sites cell abundance
+ca_sites.json" # cell abundance of randomly generated sites
+cells_niches.json" # sites centered on cells and niches weights
 
-### Outputs 
-NOTEBOOKS 
+The R script *py_wrapper_nipmap.r* 
+
+- paramters to change: 
+
+- mention the function script 
 
 2. Open *py_wrapper_nipmap.r* script. Set the parameters in the script header. Execute the script in Rstudio or on the command line:
   ```bash
