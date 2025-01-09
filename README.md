@@ -1,7 +1,9 @@
 # README
 
-This document aims to summarise the result of a 2-month computational internship. The contents include:
-- application of NIPMAP on the bone cancer dataset (from Lukas Hatscher) 
+Current repository serves as a guide to reproduce NIPMAP application on a bone disease dataset for benchmarking.
+
+This document's contents include:
+- intstruction and scripts to run NIPMAP on the bone cancer dataset (from Lukas Hatscher) 
 - comparison and interpretation of the method output & conclusions
 
 This README file bases on the original [NIPMAP GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main) and [publication](https://www.nature.com/articles/s41467-023-42878-z) by El Marrahi et al. 2023
@@ -108,17 +110,17 @@ In the running_nipmap.py main script, several parameters had to be changed to ac
 Parameters to change: 
 - **CELLTYPES**: list of cell phenotypes present across all images 
 - **ImageIDs**: list of all SampleIDs, created in the pre-processing step 
-- **NBNICHES**: number of niche, 7 in current script, can be adapted
-- **RADIUS**: radii of sites (calculated based on optimal coverage & amount of PC), 13µm is sufficient to capture spatial niches
+- **NBNICHES**: number of niches, 7 in current script, can be adapted
+- **RADIUS**: radii of sampling sites (calculated based on optimal image coverage & amount of PC), 13µm is sufficient to capture spatial niches
 - **NSITES**: number of sites sampled from images, 100 are enough to capture the variance in a 1000x1000µm image.
 - **ROOT_DATA_PATH**: directory where processed csv files with region properties are stored (patient<SampleID>_cell_positions.csv)
 
 ### Working with nipmap 
-The python script will generate these outputs as json files:
-pca_sites.json" # pca object on sites elements
-AA_sites.json" # archetype Analysis object based on sites cell abundance
-ca_sites.json" # cell abundance of randomly generated sites
-cells_niches.json" # sites centered on cells and niches weights
+The python script will generate json files as output:<br>
+pca_sites.json" # pca object on sampling sites<br>
+AA_sites.json" # Archetype Analysis object based on sites cell abundance<br>
+ca_sites.json" # cell abundance of randomly generated sites<br>
+cells_niches.json" # sites centered on cells and niches weights<br>
 
 The R script *py_wrapper_nipmap.r* 
 
