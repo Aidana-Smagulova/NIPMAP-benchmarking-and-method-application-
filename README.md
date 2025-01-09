@@ -79,7 +79,7 @@ Data preprocessing steps:
 - *intensities* folder contains files for each patient ID with phenotypic markers and marker intensities for each cell.
 - *regionsprops* folder contains files for each patient, with X and Y coordinates and phenotypes for each cell.
 - NIPMAP takes SampleIDs as a list to iterate through images - therefore the files needed to be re-labelled with integers.
-- the script ***preprocessing.py*** will rename columns as in the NIPMAP tutorial (https://github.com/jhausserlab/NIPMAP/blob/main/README.md#inputs) and create a main csv where names of the files are coded into integers (SampleIDs), as well as create the cellData.csv with marker intensities, where cell labels and SampleIDs are cross referenced. <br>
+- the script ***preprocessing_files.py*** will rename columns as in the NIPMAP tutorial (https://github.com/jhausserlab/NIPMAP/blob/main/README.md#inputs) and create a main csv where names of the files are coded into integers (SampleIDs), as well as create the cellData.csv with marker intensities, where cell labels and SampleIDs are cross referenced. <br>
 
 For each SampleID: <br>
 - Y_centroid -> *y*, y coordinate of the cell in the image <br>
@@ -99,15 +99,15 @@ For cellData.csv:
 
 Prior to anything, the GitHub repository of [NIPMAP](https://github.com/jhausserlab/NIPMAP/tree/main) was cloned to the workspace. 
 
+Running: 
 
-Runing: 
 ```bash
 bash running_nipmap.sh
 ```
 
-Will submit a batch job to the cluster and execute **running_nipmap.py**, where the main spatial analysis is happening. 
+will submit a batch job to the cluster and execute **running_nipmap.py**, where the main spatial analysis is happening. 
 
-***Make sure enough data is allocated before running the script. 
+Make sure enough data is allocated before running the script. 
 
 ### Parameters to choose: 
 In the running_nipmap.py main script, several parameters had to be changed to account for the bone dataset. 
