@@ -1,11 +1,13 @@
 # README
 
-This document aims to summarise the result of a 2-month computational internship. The contents are:
+This document aims to summarise the result of a 2-month computational internship. The contents include:
 - NIPMAP results reproduction with MIBI images of TNBC of Keren et al (2021)
 - re-application of NIPMAP on the bone cancer dataset (from Lukas Hatscher) 
 - comparison and interpretation of the method output & conclusions
 
 This README file bases on the original [NIPMAP GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main) and [publication](https://www.nature.com/articles/s41467-023-42878-z) by El Marrahi et al. 2023
+
+## Index 
 
 
 ## Method description 
@@ -14,9 +16,8 @@ NIPMAP - NIche Phenotype MAPping (NIPMAP) analysis from spatial multiplex data.
 Tissue microenvironments play a significant role in pathology. 
 
 NIPMAP is a spatial mathod that works to discover niches (clusters of cells with similar profile) using principles from the community ecology approach, PCA and archetypes analysis. 
-For this method, each cell type is treated like a species in an oncological niche, where its abundance can be inferred. Based on thus abundance, analysis like PCA can be performed. The PCA space is then fitted onto a simpled figure (using AA), where simplex tips are archetypes (extreme cases of niches). Each cell will find itself somewhere on the simplex. Cells right at the tips will most probably belong to that archetype and be situated in the corresponding niche. However, cells that would lie on the edges of the simplex, more specifically between two archetypes, most likely lay between two niches and will be, therefore, assigned to an interface between the two niches. 
-
-## index? 
+For this method, each cell type is treated like a species in an ecological niche. The whole image is sampled randomly and uniformly in small circular cites (radius can be decided manually), and abundancies of each cell types are calculated inside of the sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. 
+This abundance matrix is then used to perform PCA (paper shows that 3 components are enough to capture the variance). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is a niche extreme case, when only one cell profile is abundant in a niche to 100% (say, only cancerous or only immune cells). Therefore, simplex tips are archetypes. If a sampling site falls on a samplex tip, the archetype weight will be 100% for this exact site. However, if a sampling site falls on an edge of the figure, it will not be allocated to a single archetype with 100% certainly but rather will represent a mixture of two near-lying archetype weights in percent. Sampling sites right in between of two archetypes (50% for each of them) are determined to be interfaces - regions that lay between any of the two niches. 
 
 ## Requirements 
 
@@ -41,7 +42,6 @@ and then:
     pip install qpsolvers==1.9.0
 ``` 
 
-
 Further description of all packages in the environment can be found in the requirements.txt file. 
 
 * R libraries:
@@ -62,52 +62,63 @@ Data: Multiplex Ion Imaging on 41 Triple Negative Breast tumors from [Keren et a
 ## Re-application of the method on Lukas' data 
 
 ### Data: 
-regionprops_annotated - csv files with cell coordinates in images, 1000x1000 px, 1000x1000µm
-intensities - csv files with marker intensities in images 
-
 ```
 .
 ├── 7n_output
 ├── TMENS_analysis
 │   └── data
-|       ├── cell_data.csv #big csv with all of the cells & marker intensities 
+|       ├── cellData.csv #big csv with all of the cells & marker intensities 
 │       └── cell_positions_data #contains all patients' files with data on X and Y coordinates of each cell + the renaming csv 
 └── updated_csvs #raw data 
     ├── intensities #cell phenotypic markers & intensities 
     └── regionprops #cell coordinates, phenotype 
 ```
 
+Data preprocessing steps: 
+- produce csvs from the ann data object: two folders (intensities & regionsprops) with csv files for each patient, sample and ROI. names in format: TS-373_IMC78_UB_001.csv (TS-373_IMC_patientID_disease_ROI.csv)
+- *intensities* folder contains files for each patient ID with phenotypic markers and marker intensities for each cell.
+- *regionsprops* folder contains files for each patient, with X and Y coordinates and phenotypes for each cell.
+- NIPMAP takes SampleIDs as a list to iterate through images - therefore the files needed to be re-labelled with integers.
+- the script ***preprocessing.py*** will rename columns as in the NIPMAP tutorial (https://github.com/jhausserlab/NIPMAP/blob/main/README.md#inputs) and create a main csv where names of the files are coded into integers (SampleIDs), as well as create the cellData.csv with marker intensities, where cell labels and SampleIDs are cross referenced. <br>
 
-process: 
-- produce csvs from the ann data object: two folders (intensities & regionsprops) with csv files for each patient, sample and ROI. names in format: TS-373_IMC78_UB_001.csv (TS-373_IMC*patient ID*_*disease*_*ROI*.csv)
-- intensities folder contains files for each patient ID with phenotypic markers and marker intensities for each cell (object).
-- regionsprops folder contains files for each patient, with X and Y coordinates and phenotypes for each cell (object)
-- the script preprocessing.py will rename columns as in the NIPMAP tutorial (https://github.com/jhausserlab/NIPMAP/blob/main/README.md#inputs) and create a main csv where names of the files are coded into integers 
+For each SampleID: <br>
+- Y_centroid -> *y*, y coordinate of the cell in the image <br>
+- X_centroid -> *x*, x coordinate of the cell in the image <br> 
+- Object -> *label*, integer cell label (matches with labels in cellData.csv) <br>
+- Phenotype -> *cell_type*, string that describes the cell type <br>
 
-1. One CSV file per sample named *patient\<Patient ID\>_cell_positions.csv*, with cells as rows and the following columns:
-* *x*, x position of the cell in the image
-* *y*, y position of the cell in the image
-* *label*, an integer index for the cell, to cross reference with the *cellData.csv* file (below)
-* *cell_type*, a string describing the cell type
-2. One CSV file named *cellData.csv* with cells as rows and the following columns:
-* *cellLabelInImage*, an integer index for the cell, to cross reference with the *patient\<Patient ID\>_cell_positions.csv* files (above)
-* *SampleID*, the sample of origin, matching the *\<Patient ID\>* of the *patient\<Patient ID\>_cell_positions.csv* files
-* one column per marker containing the intensity of each marker (for example MHCI, CD68, CD45RO, ...)
-The repository contains example CSV files from the Keren et al. and Sountoulidis et al. studies.
+File names: TS-373_IMC_patientID_disease_ROI.csv -> patient<SampleID>_cell_positions.csv.
+
+For cellData.csv:
+- Object -> *cellLabelInImage*, integer cell label (matches with labels in patient<SampleID>_cell_positions.csv) 
+- *SampleID* column is added based on the patient ID
+- remaining columns - markers with respective intensities 
 
 
 ### Running the analysis 
 
-bash running_nipmap.sh - submitting a batch job 
-uses the python script - running_nipmap.py
+Prior to anything, the GitHub repository of [NIPMAP](https://github.com/jhausserlab/NIPMAP/tree/main) was cloned to the workspace. 
 
-### parameters to choose: 
-parameters to change: 
-- protein markers
-- cell types (phenotypes)
-- number of niches
-- radii of sites
-- number of sites in the script
+
+Runing: 
+```bash
+bash running_nipmap.sh
+```
+
+Will submit a batch job to the cluster and execute **running_nipmap.py**, where the main spatial analysis is happening. 
+
+***Make sure enough data is allocated before running the script. 
+
+### Parameters to choose: 
+In the running_nipmap.py main script, several parameters had to be changed to account for the bone dataset. 
+
+Parameters to change: 
+- **CELLTYPES**: list of cell phenotypes present across all images 
+- **ImageIDs**: list of all SampleIDs, created in the pre-processing step 
+- **NBNICHES**: number of niche, 7 in current script, can be adapted
+- **RADIUS**: radii of sites (calculated based on optimal coverage & amount of PC), 13µm is sufficient to capture spatial niches
+- **NSITES**: number of sites sampled from images, 100 are enough to capture the variance in a 1000x1000µm image.
+- **ROOT_DATA_PATH**: directory where processed csv files with region properties are stored (patient<SampleID>_cell_positions.csv)
 
 ### Working with nipmap 
 The python script will generate these outputs as json files:
@@ -116,8 +127,7 @@ The python script will generate these outputs as json files:
 * Niche identification
 * Niche segmentation of images
 
-
-### outputs 
+### Outputs 
 NOTEBOOKS 
 
 2. Open *py_wrapper_nipmap.r* script. Set the parameters in the script header. Execute the script in Rstudio or on the command line:
