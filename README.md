@@ -131,25 +131,32 @@ will submit a batch job to the cluster and execute **running_nipmap.py**, where 
 
 *Make sure enough data is allocated before running the script.*
 
-### Parameters to choose: 
-In the **running_nipmap.py** script (original **main_nipmap.py** script), several parameters had to be changed to account for the bone dataset. 
+### Working with nipmap 
 
-Parameters to change: 
+NIPMAP consists of running the main .py script and then taking the outputs to R for plotting and visualising. 
+
+Executing main python script  **running_nipmap.py** will run calculate cell type abundancies in sampling sites, generate an abundance matrix, run PCA, archetypal analysis, and calculate niche weights for sampling sites. 
+
+ **running_nipmap.py** output:<br>
+pca_sites.json # pca object on sampling sites<br>
+AA_sites.json # Archetype Analysis object based on sites cell abundance<br>
+ca_sites.json # cell abundance of randomly generated sites<br>
+cells_niches.json # sites centered on cells and niches weights<br>
+params.json # file with parameters used to run the script (cell types, ImagesIDs, radius size, number of niches, number of sampling sites, etc)
+sites_cells_archs.csv #niche weight, SampleIDs, and phenotypic markers for each cell ID
+
+In comparison to the original **main_nipmap.py** script, several parameters had to be changed to account for the bone dataset. 
+
 - **CELLTYPES**: list of cell phenotypes present across all images 
 - **ImageIDs**: list of all SampleIDs, created in the pre-processing step 
 - **NBNICHES**: number of niches, 7 in current script, can be adapted
-- **RADIUS**: radii of sampling sites (calculated based on optimal image coverage & amount of PC), 13µm is sufficient to capture spatial niches
-- **NSITES**: number of sites sampled from images, 100 are enough to capture the variance in a 1000x1000µm image.
-- **ROOT_DATA_PATH**: directory where processed csv files with region properties are stored (patient<SampleID>_cell_positions.csv)
+- **RADIUS**: radii of sampling sites = 13µm
+- **NSITES**: number of sites sampled from images = 100 
+- **ROOT_DATA_PATH**: directory where processed csv files with region properties are stored (TMENS_analysis/data/cell_positions_data/...)
 
-### Working with nipmap 
-The python script will generate json files as output:<br>
-pca_sites.json" # pca object on sampling sites<br>
-AA_sites.json" # Archetype Analysis object based on sites cell abundance<br>
-ca_sites.json" # cell abundance of randomly generated sites<br>
-cells_niches.json" # sites centered on cells and niches weights<br>
+JSON files are then fed into the R script **py_wrapper_nipmap.r**
 
-The R script *py_wrapper_nipmap.r* 
+The R script will: 
 
 - paramters to change: 
 
