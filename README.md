@@ -3,7 +3,7 @@
 Current repository serves as a guide to reproduce NIPMAP application on a bone disease dataset for benchmarking.
 
 This document's contents include:
-- intstruction and scripts to run NIPMAP on the bone cancer dataset (from Lukas Hatscher) 
+- intstruction and scripts to run NIPMAP on the [myeloma dataset](https://github.com/SchapiroLabor/myeloma_standal)
 - comparison and interpretation of the method output & conclusions
 
 This README file bases on the original [NIPMAP GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main) and [publication](https://www.nature.com/articles/s41467-023-42878-z) by El Marrahi et al. 2023
