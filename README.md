@@ -22,6 +22,10 @@ NIPMAP is a statistical method that works to discover phenotypic niches in spati
 
 For this method, each cell type is treated as a species in an ecological niche. In the ecological ecosystems there are different species occupying different niches. Similarly, there are different cell types occupying different histological niches. Therefore, using the ideas from community ecology field we can consider histological niches as clusters of cells sites with similar histological profile. Within each niche cell types have certain density, which is how abundant this cell type is per surface area. The whole image is sampled randomly and uniformly in small circular cites with a radius that is big enough to capture more than one cell and so that less principal components might be needed to discover variance in cellular compositione. Per image, 100 sites are taken. This way, covered area represents 30% of the whole image, which allows efficient computations and accurate niche identification.  
 
+
+Fig.1
+
+
 Abundancies of each cell types are calculated inside of these sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (according to authors, 3 principal components are sufficient to capture 82% of variance in cellular composition in images with sampling site radius of 13µm). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when only one cell profile is abundant in a niche to 100% (say, only cancerous or only immune cells). Archetypes amount is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
 
 On the simplex, every point is a sampling site, which can be represented by a weighted average of tips of the simplex = archetypes. Thus, sites on the endpoints of the simplex, will have a 100% of one archetype weight and 0% of all others. These are solid niche representations in the tissue. A site that lays a little further away, will be calculated from all 4 archetypes, and highest weight can be decisive for niche allocation.
@@ -208,7 +212,11 @@ Custom R script **creating_csv_for_plots.R** will:
 - left-join the combined dataframe with patient data with the json file, based on cell_id and SampleID column
 - as a result we get one big csv where each cell is a row and columns contain the information on cell coordinates, phenotype, SampleID it belongs to, plus niche and interface weights for all 7 niches and 21 interfaces
 
-### results / interpretation / scatterplots 
+The resulting **cells_niches_coordinates_interfaces.csv** is used to create custom plots using the Jupyter Notebooks. 
+
+### Results / Interpretation 
+
+
 COMPARING WITH K MEANS CLUSTERING 
 THE INTERFACE ISSUE 
 ASSIGNING NICHES TO CELLS 
