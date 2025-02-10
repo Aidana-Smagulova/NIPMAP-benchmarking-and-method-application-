@@ -5,5 +5,5 @@
 #SBATCH --mem=1000gb
 #SBATCH --export=NONE
 
-SCRIPT_PATH="/gpfs/bwfor/work/ws/hd_vb248-nipmap/NIPMAP/7niches_nipmap.py"
+SCRIPT_PATH="./NIPMAP/7niches_nipmap.py"
 python3 $SCRIPT_PATH
