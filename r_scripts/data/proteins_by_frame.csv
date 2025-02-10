@@ -1,35 +1,35 @@
-Frame	Biomarker	Purpose
-0	CD38	functional
-1	Perilipin	lineage
-2	Vimentin	lineage
-3	B4GALT1	functional
-4	MPO	lineage
-5	CathepsinK	lineage
-6	ATP5A	functional
-7	RUNX2	lineage
-8	HIF1A	functional
-9	CD11b	lineage
-10	CD45	lineage
-11	CS	functional
-12	CD11c	lineage
-13	CD36	functional
-14	CD4	lineage
-15	CD34	lineage
-16	CD68	lineage
-17	IL32	functional
-18	IDO	functional
-19	CD8	lineage
-20	GranzymeK	functional
-21	PKM2	functional
-22	IRF4	lineage
-23	GLUT1	funcitonal
-24	GranzymeB	functional
-25	Ki67	functional
-26	CollagenTypeI	lineage
-27	CD3	lineage
-28	HistoneH3	lineage
-29	CPT1A	functional
-30	CD98	functional
-31	HLA-DR	lineage
-32	ST6GAL1	functional
-33	CD138	lineage
+Frame,Biomarker,Purpose
+0,CD38,functional
+1,Perilipin,lineage
+2,Vimentin,lineage
+3,B4GALT1,functional
+4,MPO,lineage
+5,CathepsinK,lineage
+6,ATP5A,functional
+7,RUNX2,lineage
+8,HIF1A,functional
+9,CD11b,lineage
+10,CD45,lineage
+11,CS,functional
+12,CD11c,lineage
+13,CD36,functional
+14,CD4,lineage
+15,CD34,lineage
+16,CD68,lineage
+17,IL32,functional
+18,IDO,functional
+19,CD8,lineage
+20,GranzymeK,functional
+21,PKM2,functional
+22,IRF4,lineage
+23,GLUT1,funcitonal
+24,GranzymeB,functional
+25,Ki67,functional
+26,CollagenTypeI,lineage
+27,CD3,lineage
+28,HistoneH3,lineage
+29,CPT1A,functional
+30,CD98,functional
+31,HLA-DR,lineage
+32,ST6GAL1,functional
+33,CD138,lineage
