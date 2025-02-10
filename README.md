@@ -4,7 +4,7 @@ This report summarises the results of my internship with the Schapiro lab where 
 
 NaroNet application was not successful, as the conda environment instructions provided in the code repository were not sufficient; and the combination of both TensorFlow and PyTorch libraries made the implementation of the tool tricky. It was decided to instead focus on NIPMAP as a more approacheable and promising tool. 
 
-Current repository serves as a guide to reproduce the tool application on a myeloma dataset from Lukas Hatscher.
+Current repository serves as a guide to reproduce NIPMAP application on the myeloma dataset.
 
 This document's contents include:
 - intstruction and scripts to run NIPMAP on the myeloma images 
@@ -18,25 +18,23 @@ This README file bases on the original [NIPMAP GitHub repository](https://github
 ## Method description 
 NIPMAP - NIche Phenotype MAPping (NIPMAP) analysis from spatial multiplex data.
 
-Tissue microenvironments play a significant role in pathology. 
-
 NIPMAP is a spatial mathod that works to discover niches using principles from the community ecology approach, PCA and archetypes analysis. 
 
-For this method, each cell type is treated like a species in an ecological niche. Just like in ecological ecosystems there are different species occupying different niches, there are different cell types in histological niches. So, using the ideas from community ecology field, we can view histological niches as clusters of cells sites with similar histological profile. Within each niche, cell types have certain density, which is how abundant this cell type is per surface area. The whole image is sampled randomly and uniformly in small circular cites with a radius that is big enough to capture more than one cell and so that less principal components might be needed to discover variance in cellular compositione. Per image, 100 sites are taken. This way, covered area represents 30% of the whole image, which allows efficient computations and accurate niche identification.  
+For this method, each cell type is treated as a species in an ecological niche. In the ecological ecosystems there are different species occupying different niches. Similarly, there are different cell types occupying different histological niches. Therefore, using the ideas from community ecology field we can consider histological niches as clusters of cells sites with similar histological profile. Within each niche cell types have certain density, which is how abundant this cell type is per surface area. The whole image is sampled randomly and uniformly in small circular cites with a radius that is big enough to capture more than one cell and so that less principal components might be needed to discover variance in cellular compositione. Per image, 100 sites are taken. This way, covered area represents 30% of the whole image, which allows efficient computations and accurate niche identification.  
 
-Abundancies of each cell types are calculated inside of the sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (with image site radius of 13µm 82% of variance in cellular composition can be discovered using just 3 principal components). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when only one cell profile is abundant in a niche to 100% (say, only cancerous or only immune cells). Archetypes amount is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
+Abundancies of each cell types are calculated inside of these sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (according to authors, 3 principal components are sufficient to capture 82% of variance in cellular composition in images with sampling site radius of 13µm). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when only one cell profile is abundant in a niche to 100% (say, only cancerous or only immune cells). Archetypes amount is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
 
 On the simplex, every point is a sampling site, which can be represented by a weighted average of tips of the simplex = archetypes. Thus, sites on the endpoints of the simplex, will have a 100% of one archetype weight and 0% of all others. These are solid niche representations in the tissue. A site that lays a little further away, will be calculated from all 4 archetypes, and highest weight can be decisive for niche allocation.
 
-Because niches might occur several times on a tissue slide, colocalisation of niches will result in interfaces - cellular sites with composition which is a weighter average of the neighboring niches. In the PCA, if a site lays directly in between two endpoints on the simplex, it will be considered an interface - a region between two niches. 
+Niches might occur several times on a tissue slide, so colocalisation of niches will result in interfaces - cellular sites that consist of cell profiles from both neighbouring niches. Interface cell composition can be calculated as the weighted average of two niches it consists of. In the PCA, if a site lays directly in between two endpoints on the simplex, it will be considered an interface - a region between two niches. 
 
-Therefore, NIPMAP is able to discover histological niches in multiplex images. 
+Therefore, NIPMAP is said to be able to discover histological niches in multiplex images. 
  
 ## Requirements 
 
 Tested on: OS: Red Hat Enterprise Linux 8.10 (Ootpa)
 
-Use the minimal_env.yml file to re-create working conda environment for NIPMAP. 
+Use the [minimal_env.yml](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/minimal_env.yml) file to re-create working conda environment for NIPMAP. 
 
 Or run: 
 
