@@ -216,8 +216,9 @@ The resulting **cells_niches_coordinates_interfaces.csv** is used to create cust
 
 ### Results / Interpretation 
 
+- **nipmap_result_evaluation.ipynb** plots niche cell-type correaltion & compares 7 NIPMAP niches to 7 k-means clusters
 
-COMPARING WITH K MEANS CLUSTERING 
+
 THE INTERFACE ISSUE 
 ASSIGNING NICHES TO CELLS 
 
