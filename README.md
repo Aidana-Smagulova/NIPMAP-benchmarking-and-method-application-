@@ -1,6 +1,6 @@
-# README
+<img width="890" alt="image" src="https://github.com/user-attachments/assets/2dcb0ff3-4a67-42a0-be89-affb5dcef0e5" /># README
 
-This report summarises the results of my internship with the Schapiro lab where I helped to benchmark spatial tumor microenvironment mapping tools: [NaroNet](https://www.sciencedirect.com/science/article/pii/S1361841522000366) and [NIPMAP](https://www.nature.com/articles/s41467-023-42878-z). My contribution included running these tools using the code provided on the GitHub repositories and checking, whether they deliver the same results as reported in the publications. Moreover, I aimed at customising the tools to apply them on the [myeloma dataset](https://github.com/SchapiroLabor/myeloma_standal) from Lukas Hatscher, to extend the metadata with the spatial tumor microenvironment information. 
+This report summarises the results of my internship with the Schapiro lab where I helped to benchmark spatial tumor microenvironment mapping tools: [NaroNet](https://www.sciencedirect.com/science/article/pii/S1361841522000366) and NIPMAP by [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z). My contribution included running these tools using the code provided on the GitHub repositories and checking, whether they deliver the same results as reported in the publications. Moreover, I aimed at customising the tools to apply them on the [myeloma dataset](https://github.com/SchapiroLabor/myeloma_standal) from Lukas Hatscher, to extend the metadata with the spatial tumor microenvironment information. 
 
 NaroNet application was not successful, as the conda environment instructions provided in the code repository were not sufficient; and the combination of both TensorFlow and PyTorch libraries made the implementation of the tool tricky. It was decided to instead focus on NIPMAP as a more approacheable and promising tool. 
 
@@ -24,13 +24,13 @@ For this method, each cell type is treated as a species in an ecological niche. 
 
 ![this image shows a table with phenotypic niches and possible cell types they might include](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_example.png) 
 
-Fig.1
+*Fig.1 [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z) Fig.1(d); Niches may include several cell types, but they to be similar in profile.* 
+ 
 
 The whole image is sampled randomly and uniformly in small circular cites with a radius that is big enough to capture more than one cell and so that less principal components might be needed to discover variance in cellular compositione. Per image, 100 sites are taken. This way, covered area represents 30% of the whole image, which allows efficient computations and accurate niche identification.  
 
 ![this image shows a phenotypic niche in gray laid over some cells in a spatial image](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_description.png)
-Fig.2
-
+*Fig.2 [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z) Fig.1(a); Illustration of how niches consist of similar cell types that each have specific density. Density is cell type abundance per surface area unit.* 
 
 Abundancies of each cell types are calculated inside of these sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (according to authors, 3 principal components are sufficient to capture 82% of variance in cellular composition in images with sampling site radius of 13µm). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when only one cell profile is abundant in a niche to 100% (say, only cancerous or only immune cells). Archetypes amount is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
 
@@ -38,12 +38,12 @@ On the simplex, every point is a sampling site, which can be represented by a we
 
 ![this image shows a PCA space, where each point is a sampling site and they are all situated on a simplex figure, where tips are archetypes](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/pca.png)
 
-Fig.3 
+*Fig.3 Representation of archetypal analysis result after fitting PCA space of sampling sites onto 7 archetypes. In the 3-dimensional space the PCA space takes the form of a fimplex. PCA is generated from running NIPMAP on 154 samples of the myeloma dataset.*
 
 Niches might occur several times on a tissue slide, so colocalisation of niches will result in interfaces - cellular sites that consist of cell profiles from both neighbouring niches. Interface cell composition can be calculated as the weighted average of two niches it consists of. In the PCA, if a site lays directly in between two endpoints on the simplex, it will be considered an interface - a region between two niches. 
 
 ![interface](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/interfaces.png)
-Fig. 4
+*Fig.4 [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z) Fig.1 (d); This image represents how interfaces (regions between two niches) arise when niches colocalise and some cells fall of spaces between them, rather than falling onto one of the niches.* 
 
 Therefore, NIPMAP is to be able to discover histological niches in multiplex images. 
  
@@ -231,7 +231,7 @@ Further analysis is performed with this format of csv:
 
 ![csv table with cells and niches](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/cell_niche_csv.png)
 
-Fig.5 
+Fig.5 Main NIPMAP output after post-processing in R: csv table from the json files, where each column is an entry relevant to an individual cell; and rows contain information such as 7 niche weights, cell ID, Sample ID and cell type for each niche. 
 
 ### Results / Interpretation 
 
@@ -239,36 +239,35 @@ Fig.5
 
 Part of post-processing of NIPMAP results was unpacking the json files and presenting the output in a csv file that summarises the main points of NIPMAP. Mainly, individual niche weights for each cells. In the result, we aimed to have a big summary of cells and niches they most likely belong to, as well as cell coordinates, SampleIDs and cell types. The csv output from **cells_niches_coordinates_interfaces.csv** stores all 7 niches for each of the cells and 21 interfaces. The interface weights are calculated from individual niches - e.g. the interface weight of "a1a7" interface is caclualted by multiplication of niche weights "a1" and "a7". 
 
-The python post-processing 
-
 ![csv table with cells and niches these cells most likely belong to](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/cell_niche_interface_csv.png)
 
-Fig.6
+*Fig.6 CSV table where each cell is allocated to a niche AND an interface it most likely belongs to. Cells are allocated to the niches/interfaces with highest weight using a rowmax.*
+
+The result processing also includes investigating niche composition - which cell types are allocated to which niches. For this, the frequencies of each cell type can be calculated from the **cells_niches_coordinates_interfaces.csv** and plotted in a heatmap manner, where warmer and brighter color represents higher cell type density in the given niche. 
 
 ![7 NIPMAP niches vs cell types heatmap](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_heatmap.png) 
 
-Fig.7 
+*Fig.7 Heatmap of 7 NIPMAP niches composition, after running it on 154 samples of the myeloma dataset, where each row is a cell type and the abundance in a niche (column).* 
+
+From here it can be seen that NIPMAP niches can be distinguishable from each other based on the cell types abundancies. Moreover, NIPMAP niches even include several cell type that are similar: for example, niche 6 consist of T-cells, which shows that NIPMAP is capable of co-assotiating certain niches with very similar cell profiles. 
+
+*Fig.9 Heatmap of 7 NIPMAP niches and 7 k-means cluster correlation.*
+
+
+After running the basic analysis and looking into niche composition, **scatter_plotting.ipynb** can be used to plots cells colored by niche & interfaces using **cells_niches_coordinates_interfaces.csv**. 
+
+### Discussion
+
+The correlation heatmap suggests that certain niches and k-means cluster might overlap in their cell type compositions. 
 
 ![7 k-means clusters from scimap vs cell types heatmap](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/kmean_cluster_heatmap.png) 
 
-Fig.8 
+*Fig.8 Heatmap of 7 k-means clusters from scimap, ran on 154 samples of the myeloma dataset. Each row is a cell type and each entry is its abundance in a certain k-mean cluster (column).* 
 
-![correlation heatmap of 7 NIPMAP niches vs 7 k-means clusters from scimap](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/correlation_heatmap.png)
+![correlation heatmap of 7 NIPMAP niches vs 7 k-means clusters from scimap](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/heatmap_correlation.png)
 
-Fig.9
+Considering the biology behind the data, one cell cannot belong to an interface and a niche at the same time. It would make sense to produce a table where each cell could be allocated to either a niche or an interface, but here we faced a definition issue: how do we decide, which cells can belong to interfaces and which to just niches? 
 
+Use more image area to calculate niches, another way to discover interfaces, try power analysis 
 
-**scatter_plotting.ipynb** plots cells colored by niche & interfaces 
-
-![scatterplot image of niches discovered by NIPMAP](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/sample27_niches.png)
-Fig.10
-
-![scatterplot image of interfaces](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/sample27_niches_interfaces.png)
-
-Fig.11 
-
-![scatterplot image of interfaces with cutoff](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/sample27_interface_upper_quant.png)
-
-Fig.12
-
-El Marrahi, A., Lipreri, F., Kang, Z. et al. NIPMAP: niche-phenotype mapping of multiplex histology data by community ecology. Nat Commun 14, 7182 (2023). https://doi.org/10.1038/s41467-023-42878-z
+[El Marrahi, A., Lipreri, F., Kang, Z. et al. NIPMAP: niche-phenotype mapping of multiplex histology data by community ecology. Nat Commun 14, 7182 (2023). https://doi.org/10.1038/s41467-023-42878-z](https://www.nature.com/articles/s41467-023-42878-z)
