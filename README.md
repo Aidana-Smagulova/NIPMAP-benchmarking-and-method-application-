@@ -1,4 +1,4 @@
-<img width="890" alt="image" src="https://github.com/user-attachments/assets/2dcb0ff3-4a67-42a0-be89-affb5dcef0e5" /># README
+# README
 
 This report summarises the results of my internship with the Schapiro lab where I helped to benchmark spatial tumor microenvironment mapping tools: [NaroNet](https://www.sciencedirect.com/science/article/pii/S1361841522000366) and NIPMAP by [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z). My contribution included running these tools using the code provided on the GitHub repositories and checking, whether they deliver the same results as reported in the publications. Moreover, I aimed at customising the tools to apply them on the [myeloma dataset](https://github.com/SchapiroLabor/myeloma_standal) from Lukas Hatscher, to extend the metadata with the spatial tumor microenvironment information. 
 
