@@ -22,9 +22,12 @@ NIPMAP is a statistical method that works to discover phenotypic niches in spati
 
 For this method, each cell type is treated as a species in an ecological niche. In the ecological ecosystems there are different species occupying different niches. Similarly, there are different cell types occupying different histological niches. Therefore, using the ideas from community ecology field we can consider histological niches as clusters of cells sites with similar histological profile. Within each niche cell types have certain density, which is how abundant this cell type is per surface area. The whole image is sampled randomly and uniformly in small circular cites with a radius that is big enough to capture more than one cell and so that less principal components might be needed to discover variance in cellular compositione. Per image, 100 sites are taken. This way, covered area represents 30% of the whole image, which allows efficient computations and accurate niche identification.  
 
-
+![this image shows a phenotypic niche in gray laid over some cells in a spatial image](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_description.png)
 Fig.1
 
+![this image shows a table with phenotypic niches and possible cell types they might include](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_example.png) 
+
+Fig.2 
 
 Abundancies of each cell types are calculated inside of these sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (according to authors, 3 principal components are sufficient to capture 82% of variance in cellular composition in images with sampling site radius of 13µm). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when only one cell profile is abundant in a niche to 100% (say, only cancerous or only immune cells). Archetypes amount is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
 
