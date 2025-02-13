@@ -1,6 +1,6 @@
 # README
 
-This report summarises the results of my internship with the Schapiro lab where I helped to benchmark spatial tumor microenvironment mapping tools: [NaroNet](https://www.sciencedirect.com/science/article/pii/S1361841522000366) and NIPMAP by [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z). My contribution included running the tools and customising them to apply on the [myeloma dataset](https://github.com/SchapiroLabor/myeloma_standal) from Lukas Hatscher, to extend the metadata with the spatial tumor microenvironment information. 
+This report summarises the results of my internship with the Schapiro lab where I helped to benchmark spatial tumor microenvironment mapping tools: NaroNet by [Jiménez-Sánchez et al. 2022](https://www.sciencedirect.com/science/article/pii/S1361841522000366) and NIPMAP by [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z). My contribution included running the tools and customising them to apply on the [myeloma dataset](https://github.com/SchapiroLabor/myeloma_standal) from Lukas Hatscher, to extend the metadata with the spatial tumor microenvironment information. 
 
 NaroNet application was not successful, as the conda environment instructions provided in the code repository were not sufficient; and the combination of both TensorFlow and PyTorch libraries made the implementation of the tool tricky. It was decided to instead focus on NIPMAP as a more approacheable and promising tool. 
 
