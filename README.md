@@ -8,11 +8,9 @@ Current repository serves as a guide to reproduce NIPMAP application on the myel
 
 This document's contents include:
 - intstruction and scripts to run NIPMAP on the myeloma images 
-- comparison and interpretation of the method output & conclusions
+- interpretation of the method output & conclusions
 
 This README file bases on the original [NIPMAP GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main) and [publication](https://www.nature.com/articles/s41467-023-42878-z) by El Marrahi et al. 2023
-
-## Index 
 
 
 ## Method description 
@@ -20,21 +18,20 @@ NIPMAP - NIche Phenotype MAPping (NIPMAP) analysis from spatial multiplex data.
 
 NIPMAP is a statistical method that works to discover phenotypic niches in spatial data using principles from the community ecology approach, PCA and archetypes analysis. 
 
-For this method, each cell type is treated as a species in an ecological niche. In the ecological ecosystems there are different species occupying different niches. Similarly, there are different cell types occupying different histological niches. Therefore, using the ideas from community ecology field we can consider histological niches as clusters of cells sites with similar histological profile. Within each niche cell types have certain density, which is how abundant this cell type is per surface area. 
+For this method, each cell type is treated as a species in an ecological niche. In the ecological ecosystems there are different species occupying different niches. Similarly, there are different cell types occupying different histological niches. Therefore, using the ideas from community ecology field we can consider histological niches as clusters of cells sites with similar histological profile. Within each niche, certain cell types have certain density, which is the abundant of a cell type per surface area. 
 
 ![this image shows a table with phenotypic niches and possible cell types they might include](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_example.png) 
 
 *Fig.1 [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z) Fig.1(d); Niches may include several cell types, but they to be similar in profile.* 
  
-
-The whole image is sampled randomly and uniformly in small circular cites with a radius that is big enough to capture more than one cell and so that less principal components might be needed to discover variance in cellular compositione. Per image, 100 sites are taken. This way, covered area represents 30% of the whole image, which allows efficient computations and accurate niche identification.  
+The whole image is sampled randomly and uniformly in small circular cites with a radius that is big enough to capture more than one cell and so that less principal components might be needed to discover variance in cellular compositione. In the original publication, 100 sites are taken per image. This way, covered area represents 30% of the whole image, which allows efficient computations and accurate niche identification.  
 
 ![this image shows a phenotypic niche in gray laid over some cells in a spatial image](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_description.png)
 *Fig.2 [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z) Fig.1(a); Illustration of how niches consist of similar cell types that each have specific density. Density is cell type abundance per surface area unit.* 
 
-Abundancies of each cell types are calculated inside of these sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (according to authors, 3 principal components are sufficient to capture 82% of variance in cellular composition in images with sampling site radius of 13µm). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when only one cell profile is abundant in a niche to 100% (say, only cancerous or only immune cells). Archetypes amount is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
+Abundancies of each cell types are calculated inside of these sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (according to authors, 3 principal components are sufficient to capture 82% of variance in cellular composition in images with sampling site radius of 13µm). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when only one cell profile is abundant in a niche to 100% (only cancerous or only immune cells). Archetypes number is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
 
-On the simplex, every point is a sampling site, which can be represented by a weighted average of tips of the simplex = archetypes. Thus, sites on the endpoints of the simplex, will have a 100% of one archetype weight and 0% of all others. These are solid niche representations in the tissue. A site that lays a little further away, will be calculated from all 4 archetypes, and highest weight can be decisive for niche allocation.
+On the simplex, every point is a sampling site, which can be represented by a weighted average of tips of the simplex = archetypes. Thus, sites on the endpoints of the simplex, will have a 100% of one archetype weight and 0% of all others. These archetypes are the niche representations in the tissue. A site that lays a little further away, will be calculated from all 4 archetypes, and highest weight can be decisive for niche allocation.
 
 ![this image shows a PCA space, where each point is a sampling site and they are all situated on a simplex figure, where tips are archetypes](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/pca.png)
 
@@ -277,7 +274,7 @@ One of the possible explanations is thast NIPMAP algorithm could not work on the
 
 Another way to explain the interface issue is that NIPMAP was tested on 154 images, 100 sampling spots taken from each of them with a radius of 13µm. Considering that images are 1000µx1000µ in size, the sampling intensity of each image is approximately 5%, while in the paper by El. Marrahi et al. 2023 the minimal sampling intensity NIPMAP was tested on is 30%. The radius size is appropriate to run a PCA with 3 principal components, so one possibility would be to increase the sampling site number from one image, thus increasing sampling intensity, and, maybe, discovering more reliable niches and more accurate niche weights for each cell. If the cells are allocated to niches more reliably, maybe there could be an interface cut-off value determined that could work for at least most of the samples. 
 
-In conclusion, NIPMAP is a running tool that combines statistics and machine learning (archetypal analysis) to discover tumor microenvironments. It was easy to implement and required little parameter change in order to optimise it for the myeloma dataset. 
+In conclusion, NIPMAP is a running tool that combines statistics and community ecology approach to discover tumor microenvironments. It was easy to implement and required little parameter change in order to optimise it for the myeloma dataset. 
 
 The question of how to quantify the accuracy of niche/interface allocation other than taking the rowmax remains. Further analysis is needed to validate and verify NIPMAP results, e.g. through cohort comparison between myeloma disease and normal samples in terms of niches. Plus, there are some things yet to try, for example the power analysis script in the NIPMAP [GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main/power_analysis) to detect rare niches; or run sampling intensity analysis for the myeloma dataset, try to run NIPMAP with different parameters, such as different amount of principal componentes, site sampling, site radii and/or niche number. 
 
