@@ -186,9 +186,9 @@ The R script will:
 - write a csv with cell types densities in each of the archetypes (nicheComposition.csv) and plot it into a barplot (barplotNiches.pdf)
 - use cellData.csv to map niches & phenotypic markers in the cellPhenotypesNiches.csv
 - plot heatmaps with niches & phenotypic markers correlation
-- allocates niches to each sampling site and writes to sites_niches_all_patients.csv
-- writes niches_ct_density for each of the marker density in all 7 niches
-- writes csv Niches_whichcells.csv with certain cell types enriched in niches (basically niche composition)
+- allocate niches to each sampling site and write to sites_niches_all_patients.csv
+- write niches_ct_density for each of the marker density in all 7 niches
+- write csv Niches_whichcells.csv with certain cell types enriched in niches (basically niche composition)
 
 Parameters to change: 
 - data input (json files) & output paths (where all the resulting csv's should be written)
@@ -206,9 +206,9 @@ MARKERS <- c('CD38', 'Perilipin', 'Vimentin', 'B4GALT1', 'MPO',
              'CPT1A', 'CD98', 'HLA-DR', 'ST6GAL1', 'CD138')
 - niche names in the NichesNames variable
 
-NichesNames <- c("a1"="niche1","a2"="niche2","a3"="niche3","a4"="niche4")
+NichesNames <- c("a1"="niche1","a2"="niche2","a3"="niche3","a4"="niche4", "a5"="niche5", "a6"="niche6", "a7"="niche7")
 
-- use the custom proteins_by_frame.csv
+- use the custom **proteins_by_frame.csv**
 
 Another R script **functions_phenotypes_tmens.r** contains all necessary functions to produce the csv's and plots in the py_wrapper_nipmap.r script. In this one, several functions had to be debugged and customised to fit the myeloma dataset. Therefore, both scripts are fixed and provided in the current repository with updated parameters. Right now scripts are written to run NIPMAP on 7 niches, but it can be fixed with parameters above. 
 
@@ -249,25 +249,28 @@ The result processing also includes investigating niche composition - which cell
 
 *Fig.7 Heatmap of 7 NIPMAP niches composition, after running it on 154 samples of the myeloma dataset, where each row is a cell type and the abundance in a niche (column).* 
 
-From here it can be seen that NIPMAP niches can be distinguishable from each other based on the cell types abundancies. Moreover, NIPMAP niches even include several cell type that are similar: for example, niche 6 consist of T-cells, which shows that NIPMAP is capable of co-assotiating certain niches with very similar cell profiles. 
+From here it can be seen that NIPMAP niches can be distinguishable from each other based on the cell types abundancies. NIPMAP found a tumor niche a1 with plasma cells and several immune niches including a Neutrophil, Macrophage, MPO+, and T-cell niches. Some cell types are more abundant than other, e.g. plasma cells, neutrophils, or the unknown phenotype, and their density is reflected on the heatmap in comparison to less abundant cell types. Moreover, NIPMAP niches even include several cell type that are similar: for example, niche 6 consist of T-cells, which shows that NIPMAP is capable of co-assotiating certain niches with very similar cell profiles. 
 
-*Fig.9 Heatmap of 7 NIPMAP niches and 7 k-means cluster correlation.*
+![7 k-means clusters from scimap vs cell types heatmap](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/kmean_cluster_heatmap.png) 
 
+*Fig.8 Heatmap of 7 k-means cluster composition, after running it on 154 samples of the myeloma dataset, where each row is a cell type and the abundance in a niche (column).* 
 
 After running the basic analysis and looking into niche composition, **scatter_plotting.ipynb** can be used to plots cells colored by niche & interfaces using **cells_niches_coordinates_interfaces.csv**. 
 
 ### Discussion
 
-The correlation heatmap suggests that certain niches and k-means cluster might overlap in their cell type compositions. 
+NIPMAP was successful in finding 7 niches amont the 154 images in the myeloma dataset and producing output in form that we can further work with. 
 
-![7 k-means clusters from scimap vs cell types heatmap](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/kmean_cluster_heatmap.png) 
-
-*Fig.8 Heatmap of 7 k-means clusters from scimap, ran on 154 samples of the myeloma dataset. Each row is a cell type and each entry is its abundance in a certain k-mean cluster (column).* 
+The correlation heatmap (Fig.8) suggests that certain niches and k-means cluster might overlap in their cell type compositions. While this is not an evaluation metric which has the power to say that NIPMAP worked perfectly, it does help to see that certain NIPMAP niches correlate with k-means clusters with high coefficients.
 
 ![correlation heatmap of 7 NIPMAP niches vs 7 k-means clusters from scimap](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/heatmap_correlation.png)
 
-Considering the biology behind the data, one cell cannot belong to an interface and a niche at the same time. It would make sense to produce a table where each cell could be allocated to either a niche or an interface, but here we faced a definition issue: how do we decide, which cells can belong to interfaces and which to just niches? 
+*Fig.9 Heatmap of 7 k-means clusters from scimap, ran on 154 samples of the myeloma dataset. Each row is a cell type and each entry is its abundance in a certain k-mean cluster (column).* 
 
-Use more image area to calculate niches, another way to discover interfaces, try power analysis 
+After examining niche composition we wanted to look into how these niches co-localise spatially and whether we can find correlation between niches and their interfaces. The main goal was to show that interfaces do in fact emerge in areas between niches. However, out data had the problem of allocating one cell to either a niche or an interface. Considering the biology, one cell cannot belong to both at the same time. It would make sense to produce a table where each cell could be allocated to either a niche or an interface, but here we faced a definition issue: how do we decide, which cells can belong to interfaces and which to just niches? 
+
+The simplest solution was to find a cut-off value for interfaces - a certain threshold of an interface weight after which we can say that a cell belongs to an interval. The higher the interface value, the more likely a cell is to be allocated to this interval. But the problem did not solve itself with plotting niches and then cells with high interface values as well, as there were very little cells that could catogorise as intervals. What is more important, even cells with very high interface weights were still not colocalising with niche borders and sometimes emerged in a middle of one niche, where there was no niche/niche interaction. 
+
+Use more image area to calculate niches, another way to discover interfaces, try power analysis, r and python 
 
 [El Marrahi, A., Lipreri, F., Kang, Z. et al. NIPMAP: niche-phenotype mapping of multiplex histology data by community ecology. Nat Commun 14, 7182 (2023). https://doi.org/10.1038/s41467-023-42878-z](https://www.nature.com/articles/s41467-023-42878-z)
