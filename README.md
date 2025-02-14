@@ -66,7 +66,7 @@ to recreate a working conda environment without a .yml file.
 
 Further description of all packages in the environment can be found in the [requirements.txt](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/requirements.txt) file, but it's not essential to create the NIPMAP conda environment. 
 
-* R libraries:
+R: 
 - R 4.1.3
 - RStudio
 
