@@ -1,37 +1,37 @@
 # README
 
-This report summarises the results of my internship with the Schapiro lab where I helped to benchmark spatial tumor microenvironment mapping tools: NaroNet by [Jiménez-Sánchez et al. 2022](https://www.sciencedirect.com/science/article/pii/S1361841522000366) and NIPMAP by [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z). My contribution included running the tools and customising them to apply on the [myeloma dataset](https://github.com/SchapiroLabor/myeloma_standal) from Lukas Hatscher, to extend the metadata with the spatial tumor microenvironment information. 
+This report summarises the results of my internship with the Schapiro lab where I helped to benchmark spatial tumor microenvironment mapping tools: NaroNet by [Jiménez-Sánchez et al. 2022](https://www.sciencedirect.com/science/article/pii/S1361841522000366) and NIPMAP by [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z). My contribution included running the tools and customising them to apply on the [myeloma dataset](https://github.com/SchapiroLabor/myeloma_standal) from Lukas Hatscher to possibly extend the metadata with the spatial tumour microenvironment information. 
 
-NaroNet application was not successful, as the conda environment instructions provided in the code repository were not sufficient; and the combination of both TensorFlow and PyTorch libraries made the implementation of the tool tricky. It was decided to instead focus on NIPMAP as a more approacheable and promising tool. 
+NaroNet application was not successful, as the documentation provided in the code repository was not sufficient to run the tool and the combination of both TensorFlow and PyTorch libraries made the implementation of the tool tricky. It was decided to instead focus on NIPMAP as a more approachable and promising tool. 
 
-Current repository serves as a guide to reproduce NIPMAP application on the myeloma dataset.
+The current repository serves as a guide to reproducing the NIPMAP application on the myeloma dataset.
 
 This document's contents include:
-- intstruction and scripts to run NIPMAP on the myeloma images 
+- instruction and scripts to run NIPMAP on the myeloma images 
 - interpretation of the method output & conclusions
 
-This README file bases on the original [NIPMAP GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main) and [publication](https://www.nature.com/articles/s41467-023-42878-z) by El Marrahi et al. 2023
+This README file is based on the original [NIPMAP GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main) and [publication](https://www.nature.com/articles/s41467-023-42878-z) by El Marrahi et al. 2023
 
 
 ## Method description 
 NIPMAP - NIche Phenotype MAPping (NIPMAP) analysis from spatial multiplex data.
 
-NIPMAP is a statistical method that works to discover phenotypic niches in spatial data using principles from the community ecology approach, PCA and archetypes analysis. 
+NIPMAP is a statistical method for discovering phenotypic niches in spatial data using principles from community ecology approach, PCA, and archetypes analysis. 
 
-For this method, each cell type is treated as a species in an ecological niche. In the ecological ecosystems there are different species occupying different niches. Similarly, there are different cell types occupying different histological niches. Therefore, using the ideas from community ecology field we can consider histological niches as clusters of cells sites with similar histological profile. Within each niche, certain cell types have certain density, which is the abundant of a cell type per surface area. 
+For this method, each cell type is treated as a species in an ecological niche. In the ecological ecosystems, different species occupying different niches. Similarly, there are different cell types occupying different histological niches. Therefore, using the ideas from the community ecology field, we can consider histological niches as clusters of cell sites with similar histological profiles. Within each niche, certain cell types have a certain density, which is the abundance of a cell type per surface area. 
 
 ![this image shows a table with phenotypic niches and possible cell types they might include](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_example.png) 
 
 *Fig.1 [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z) Fig.1(d); Niches may include several cell types, but they to be similar in profile.* 
  
-The whole image is sampled randomly and uniformly in small circular cites with a radius that is big enough to capture more than one cell and so that less principal components might be needed to discover variance in cellular compositione. In the original publication, 100 sites are taken per image. This way, covered area represents 30% of the whole image, which allows efficient computations and accurate niche identification.  
+The whole image is sampled randomly and uniformly in small circular sites with a radius that is big enough to capture more than one cell and so that fewer principal components might be needed to discover variance in cellular composition. In the original publication, 100 sites were taken per image. This way, covered area represents 30% of a whole image, which allows efficient computations and accurate niche identification.  
 
-![this image shows a phenotypic niche in gray laid over some cells in a spatial image](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_description.png)
+![This image shows a phenotypic niche in grey laid over some cells in a spatial image](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/niche_description.png)
 *Fig.2 [El Marrahi et al. 2023](https://www.nature.com/articles/s41467-023-42878-z) Fig.1(a); Illustration of how niches consist of similar cell types that each have specific density. Density is cell type abundance per surface area unit.* 
 
-Abundancies of each cell types are calculated inside of these sampling cites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (according to authors, 3 principal components are sufficient to capture 82% of variance in cellular composition in images with sampling site radius of 13µm). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when only one cell profile is abundant in a niche to 100% (only cancerous or only immune cells). Archetypes number is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
+Abundancies of each cell type are calculated inside of these sampling sites. Based on this, an abundance matrix of cell types in sampling sites is created. This abundance matrix is then used to perform PCA (according to authors, 3 principal components are sufficient to capture 82% of variance in cellular composition in images with a sampling site radius of 13µm). After that, the PCA space is fitted onto a simplex figure using archetypal analysis (AA). An archetype in this case is an extreme niche case, when a niche consists of only one of the cell profiles (only cancerous or only immune cells). Archetypes number is determined manually - but it was shown that 4 niches are enough to capture over 80% of variance in cellular composition between sampling sites.
 
-On the simplex, every point is a sampling site, which can be represented by a weighted average of tips of the simplex = archetypes. Thus, sites on the endpoints of the simplex, will have a 100% of one archetype weight and 0% of all others. These archetypes are the niche representations in the tissue. A site that lays a little further away, will be calculated from all 4 archetypes, and highest weight can be decisive for niche allocation.
+On the PCA space, every point is a sampling site. Each point on this simplex can be represented by a weighted average of tips of the simplex (archetypes). Thus, sites closer the endpoints of the figure will have more of one archetype weight. Tips of the simplex are sampling sites that belong to only one niche to 100%, the weight of other niches in this site is 0. However, a site that lays further away from the endpoints will be calculated from all 4 archetypes, resulting in the data-frame like format, where each cell has 4 weights for each niche. The highest niche weight for an individual cell can be decisive for niche allocation to this cell. 
 
 ![this image shows a PCA space, where each point is a sampling site and they are all situated on a simplex figure, where tips are archetypes](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/pca.png)
 
@@ -46,41 +46,43 @@ Therefore, NIPMAP is to be able to discover histological niches in multiplex ima
  
 ## Requirements 
 
-Tested on: OS: Red Hat Enterprise Linux 8.10 (Ootpa)
+Tested on: OS: Red Hat Enterprise Linux 8.10 (Ootpa), Python ver. 3.7.13
 
 Use the [minimal_env.yml](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/minimal_env.yml) file to recreate a working conda environment for NIPMAP. 
+
+```bash
+conda env create --file=minimal_env.yaml
+```
 
 Or run: 
 
 ```bash
-    conda create --name NIPMAP python=3.7.13
+conda create --name NIPMAP python=3.7.13
+conda activate NIPMAP
+pip install matplotlib scipy pandas==1.3.5 numpy>=1.17.3 scikit-learn seaborn qpsolvers==1.9.0
 ```
-and then:
 
-```bash
-    pip install matplotlib
-    pip install scipy
-    pip install pandas==1.3.5
-    pip install numpy>=1.17.3
-    pip install scikit-learn
-    pip install seaborn
-    pip install qpsolvers==1.9.0
-``` 
+to recreate a working conda environment without a .yml file. 
 
-Further description of all packages in the environment can be found in the [requirements.txt](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/requirements.txt) file. 
+Further description of all packages in the environment can be found in the [requirements.txt](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/requirements.txt) file, but it's not essential to create the NIPMAP conda environment. 
 
 * R libraries:
-    ```
-    - R 4.1.3
-    - RStudio
-    Open RStudio and run: 
-    pkgs <- c("tidyverse","ggplot2","ade4","factoextra","plotly","igraph","reshape2","ggrepel","viridis","fdrtool","pheatmap","cluster","broom","pROC","ggpubr","devtools","ggridges")
-    install.packages(pkgs)
-    ```
+- R 4.1.3
+- RStudio
+
+Open RStudio and run
+```R
+pkgs <- c("tidyverse","ggplot2","ade4","factoextra","plotly","igraph","reshape2","ggrepel","viridis","fdrtool","pheatmap","cluster","broom","pROC","ggpubr","devtools","ggridges")
+
+install.packages(pkgs)
+```
 
 ## Method application
 
 ### Data: 
+
+This is a description of how files should be ordered in the NIPMAP working directory. The TMENS_analysis folder should include the sample images csv files in the data/cell_positions_data directory; and a data/cellData.csv. Further descriptions below. 
+
 ```
 .
 ├── 7n_output
@@ -131,9 +133,9 @@ Prior to anything, the GitHub repository of [NIPMAP](https://github.com/jhausser
 git clone https://github.com/jhausserlab/NIPMAP.git
 ```
 
-NIPMAP includes running the main.py script in terminal and then taking the json outputs to R for plotting and visualising. 
+After cloning the original repository, custom python and R scripts from this repository can be downloaded to the NIPMAP working directory, in order to run the tool.
 
-Executing main python script  **running_nipmap.py** will run calculate cell type abundancies in sampling sites, generate an abundance matrix, run PCA, archetypal analysis, and calculate niche weights for sampling sites. 
+NIPMAP includes running the main_nipmap.py script in terminal and then taking the .json outputs to R for plotting and visualising. Executing the main_nipmap.py script will run calculate cell type abundancies in sampling sites, generate an abundance matrix, run PCA, archetypal analysis, and calculate niche weights for sampling sites. In case of the myeloma dataset,the main.py is swapped with  **running_nipmap.py** with adjusted parameters.  
 
 Running the running_nipmap.sh from inside of the cloned NIPMAP repository:
 
@@ -162,7 +164,7 @@ cells_niches.json – file with sites centered on cells and niches weights<br>
 params.json – file with parameters used to run the script (cell types, ImagesIDs, radius size, number of niches, number of sampling sites, etc)<br>
 sites_cells_archs.csv – a big dataframe with niche weight, SampleIDs, and phenotypic markers for each cell ID
 
-In comparison to the original **main_nipmap.py** script, several parameters had to be changed to account for the myeloma dataset. 
+In comparison to the original main_nipmap.py script, several parameters had to be changed to account for the myeloma dataset. 
 
 - **CELLTYPES**: list of cell phenotypes present across all images (same cell type names as in the processed regionprops csv files)
 - **ImageIDs**: list of all SampleIDs, created in the pre-processing step (same SampleIDs as in the processed regionprops csv files)
@@ -189,21 +191,24 @@ The R script will:
 
 Parameters to change: 
 - data input (json files) & output paths (where all the resulting csv's should be written)
-
-eg: jsonparams <- fromJSON(file="./lukas_data/updated_output/params.json")
+  ```R
+  jsonparams <- fromJSON(file="./lukas_data/updated_output/params.json")
+  ```
 
 - phenotypic markers (a list) for the mapping
-
-line 124 of the **py_wrapper_nipmap.r** script: 
-
-MARKERS <- c('CD38', 'Perilipin', 'Vimentin', 'B4GALT1', 'MPO',
+  line 124 of the **py_wrapper_nipmap.r** script:
+  ```R
+  MARKERS <- c('CD38', 'Perilipin', 'Vimentin', 'B4GALT1', 'MPO',
              'CathepsinK', 'ATP5A', 'RUNX2', 'HIF1A', 'CD11b', 'CD45', 'CS', 'CD11c',
              'CD36', 'CD4', 'CD34', 'CD68', 'IL32', 'IDO', 'CD8', 'GranzymeK',
              'PKM2', 'IRF4', 'GLUT1', 'GranzymeB', 'Ki67', 'CollagenTypeI', 'CD3',
              'CPT1A', 'CD98', 'HLA-DR', 'ST6GAL1', 'CD138')
-- niche names in the NichesNames variable
+  ```
 
-NichesNames <- c("a1"="niche1","a2"="niche2","a3"="niche3","a4"="niche4", "a5"="niche5", "a6"="niche6", "a7"="niche7")
+- niche names in the NichesNames variable
+  ```R
+  NichesNames <- c("a1"="niche1","a2"="niche2","a3"="niche3","a4"="niche4", "a5"="niche5", "a6"="niche6", "a7"="niche7")
+  ```
 
 - use the custom **proteins_by_frame.csv**
 
@@ -228,7 +233,7 @@ Further analysis is performed with this format of csv:
 
 ![csv table with cells and niches](https://github.com/Aidana-Smagulova/NIPMAP-benchmarking-and-method-application-/blob/main/figures/cell_niche_csv.png)
 
-Fig.5 Main NIPMAP output after post-processing in R: csv table from the json files, where each column is an entry relevant to an individual cell; and rows contain information such as 7 niche weights, cell ID, Sample ID and cell type for each niche. 
+*Fig.5 Main NIPMAP output after post-processing in R: csv table from the json files, where each column is an entry relevant to an individual cell; and rows contain information such as 7 niche weights, cell ID, Sample ID and cell type for each niche.* 
 
 ### Results / Interpretation 
 
@@ -270,12 +275,14 @@ The simplest solution was to find a cut-off value for interfaces - a certain thr
 
 Then it was decided to just take 25% of the rows with highest values and plot them as well. This looked well in some samples but not the others, there were still unexpected interface cells emerging in the middle of niches. Therefore, there is currently no universal solution to the interface issue that would work for all samples equally well. 
 
+INTERFACE DEFINITION ISSUE 
+
 One of the possible explanations is thast NIPMAP algorithm could not work on the myeloma dataset due to factors unique to these images, for example tissue heterogeneity, colocalisation of many different cell types in same spots, unphenotyped cells, spots that are not phenotyped like bones, etc. It is possible, that a smaller benchmark with less samples and very simple tissue architechtures could work better in order to estimate the accuracy of the tool. 
 
 Another way to explain the interface issue is that NIPMAP was tested on 154 images, 100 sampling spots taken from each of them with a radius of 13µm. Considering that images are 1000µx1000µ in size, the sampling intensity of each image is approximately 5%, while in the paper by El. Marrahi et al. 2023 the minimal sampling intensity NIPMAP was tested on is 30%. The radius size is appropriate to run a PCA with 3 principal components, so one possibility would be to increase the sampling site number from one image, thus increasing sampling intensity, and, maybe, discovering more reliable niches and more accurate niche weights for each cell. If the cells are allocated to niches more reliably, maybe there could be an interface cut-off value determined that could work for at least most of the samples. 
 
 In conclusion, NIPMAP is a running tool that combines statistics and community ecology approach to discover tumor microenvironments. It was easy to implement and required little parameter change in order to optimise it for the myeloma dataset. 
 
-The question of how to quantify the accuracy of niche/interface allocation other than taking the rowmax remains. Further analysis is needed to validate and verify NIPMAP results, e.g. through cohort comparison between myeloma disease and normal samples in terms of niches. Plus, there are some things yet to try, for example the power analysis script in the NIPMAP [GitHub repository](https://github.com/jhausserlab/NIPMAP/tree/main/power_analysis) to detect rare niches; or run sampling intensity analysis for the myeloma dataset, try to run NIPMAP with different parameters, such as different amount of principal componentes, site sampling, site radii and/or niche number. 
+The question of how to quantify the accuracy of niche/interface allocation other than taking the rowmax remains. Further analysis is needed to validate and verify NIPMAP results, e.g. through cohort comparison between myeloma disease and normal samples in terms of niches. Plus, there are some things yet to try, for example the [power analysis](https://github.com/jhausserlab/NIPMAP/tree/main/power_analysis) script in the NIPMAP GitHub repository to detect rare niches; or run sampling intensity analysis for the myeloma dataset, try to run NIPMAP with different parameters, such as different amount of principal componentes, site sampling, site radii and/or niche number. 
 
 [El Marrahi, A., Lipreri, F., Kang, Z. et al. NIPMAP: niche-phenotype mapping of multiplex histology data by community ecology. Nat Commun 14, 7182 (2023). https://doi.org/10.1038/s41467-023-42878-z](https://www.nature.com/articles/s41467-023-42878-z)
